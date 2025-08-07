@@ -18,7 +18,7 @@ function App() {
     const [step, setStep] = useState<number>(0);
     const [isCompleted, setIsCompleted] = useState(false);
     const [showWelcomeBack, setShowWelcomeBack] = useState(false);
-    const [savedSession, setSavedSession] = useState<any>(null);
+    const [savedSession, setSavedSession] = useState<{ formData: LoanFormData, step: number } | null>(null);
     const [lastSaved, setLastSaved] = useState<Date | null>(null);
 
     const [formData, setFormData] = useState<LoanFormData>({
@@ -38,7 +38,7 @@ function App() {
             setSavedSession(saved);
             setShowWelcomeBack(true);
         }
-    }, []);
+    }, [getProgress]);
 
     // Auto-save progress
     useEffect(() => {
@@ -46,7 +46,7 @@ function App() {
             saveProgress(formData, step);
             setLastSaved(new Date());
         }
-    }, [formData, step]);
+    }, [formData, step, saveProgress, isCompleted]);
 
     const updateFormData = (data: Partial<LoanFormData>) => {
         setFormData(prev => ({ ...prev, ...data }));

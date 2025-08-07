@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import type { JSX } from 'react';
 import { Card, CardBody, CardHeader } from '@heroui/card';
 import { Button } from '@heroui/button';
 import { Progress } from '@heroui/progress';
@@ -7,15 +6,7 @@ import { motion } from 'framer-motion';
 import { FormStepProps } from '../types/form.types';
 import { Sparkles, TrendingUp, Target, Rocket, ChevronRight } from 'lucide-react';
 
-interface QuizOption {
-    value: string;
-    label: string;
-    icon: JSX.Element;
-    description: string;
-    color: 'primary' | 'secondary' | 'success';
-}
-
-const PersonalityQuiz: React.FC<FormStepProps> = ({ data, onChange, onNext }) => {
+const PersonalityQuiz: React.FC<FormStepProps> = ({  onChange, onNext }) => {
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [answers, setAnswers] = useState<Record<string, string>>({});
     const [hoveredOption, setHoveredOption] = useState<string | null>(null);

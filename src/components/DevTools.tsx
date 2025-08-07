@@ -78,7 +78,7 @@ const DevTools: React.FC<DevToolsProps> = ({
                 <Settings className="w-5 h-5" />
             </Button>
 
-            {/* Developer Tools Panel */}
+            {/* Developer Tools Panel */} 
             <AnimatePresence>
                 {isOpen && (
                     <motion.div

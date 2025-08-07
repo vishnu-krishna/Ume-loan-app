@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Card, CardBody, CardHeader, CardFooter } from '@heroui/card';
+import { Card, CardBody, CardHeader } from '@heroui/card';
 import { Button } from '@heroui/button';
 import { Chip } from '@heroui/chip';
 import { motion } from 'framer-motion';
@@ -26,7 +26,7 @@ const SuccessScreen: React.FC<SuccessScreenProps> = ({ formData, onContinue }) =
             return Math.random() * (max - min) + min;
         }
 
-        const interval: any = setInterval(function () {
+        const interval = setInterval(function () {
             const timeLeft = animationEnd - Date.now();
 
             if (timeLeft <= 0) {

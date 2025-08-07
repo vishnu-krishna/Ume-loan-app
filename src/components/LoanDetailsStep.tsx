@@ -4,7 +4,7 @@ import { Chip } from '@heroui/chip';
 import { Slider } from '@heroui/slider';
 import { motion } from 'framer-motion';
 import CountUp from 'react-countup';
-import { FormStepProps } from '../types/form.types';
+import { FormStepProps, LoanFormData } from '../types/form.types';
 import { DollarSign, Calculator, Info } from 'lucide-react';
 
 const LOAN_TYPES = [
@@ -122,7 +122,7 @@ const LoanDetailsStep: React.FC<FormStepProps> = ({ data, onChange, onNext, onBa
                                             ? 'bg-primary/5 border-2 border-primary'
                                             : 'border-2 border-transparent'
                                             }`}
-                                        onPress={() => onChange({ loanType: type.value as any })}
+                                        onPress={() => onChange({ loanType: type.value as LoanFormData['loanType'] })}
                                     >
                                         <CardBody className="p-4">
                                             <div className="flex items-start gap-3">
