@@ -6,9 +6,11 @@ import { motion } from 'framer-motion';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { FormStepProps } from '../types/form.types';
-import { User, Mail, Phone, Shield, CheckCircle } from 'lucide-react';
+import { FormStepProps, SubmissionState } from '../types/form.types';
+import { User, Mail, Phone, Shield, CheckCircle, Loader2, RefreshCw } from 'lucide-react';
 import { useState } from 'react';
+import { apiService } from '../services/api.service';
+import { useToast } from '../hooks/useToast';
 
 const contactSchema = z.object({
     name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -19,8 +21,16 @@ const contactSchema = z.object({
 type ContactFormData = z.infer<typeof contactSchema>;
 
 const ContactInfoStep: React.FC<FormStepProps> = ({ data, onChange, onBack, onNext }) => {
-    const [isSubmitting, setIsSubmitting] = useState(false);
     const [agreedToTerms, setAgreedToTerms] = useState(false);
+    const [submission, setSubmission] = useState<SubmissionState>({
+        isSubmitting: false,
+        isSuccess: false,
+        error: null,
+        leadResponse: null,
+        accountResponse: null
+    });
+
+    const { showSuccess, showError, showLoading, dismiss } = useToast();
 
     const { control, handleSubmit, formState: { errors, isValid }, watch } = useForm<ContactFormData>({
         resolver: zodResolver(contactSchema),
@@ -44,18 +54,94 @@ const ContactInfoStep: React.FC<FormStepProps> = ({ data, onChange, onBack, onNe
 
     const onSubmit = async (formData: ContactFormData) => {
         if (!agreedToTerms) {
-            alert('Please agree to the terms and conditions');
+            showError('Please agree to the terms and conditions');
             return;
         }
 
-        setIsSubmitting(true);
-        onChange(formData);
+        // Update form data first
+        const updatedFormData = {
+            ...data,
+            name: formData.name,
+            email: formData.email,
+            phone: formData.phone
+        };
+        onChange(updatedFormData);
 
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        // Start submission process
+        setSubmission(prev => ({
+            ...prev,
+            isSubmitting: true,
+            error: null
+        }));
 
-        setIsSubmitting(false);
-        if (onNext) onNext();
+        const loadingToast = showLoading('Submitting your application...');
+
+        try {
+            // Step 1: Submit lead to Salesforce
+            const leadResponse = await apiService.submitLead(updatedFormData);
+
+            if (leadResponse.status !== 'success') {
+                throw new Error(leadResponse.message || 'Failed to submit lead');
+            }
+
+            // Update loading message
+            dismiss(loadingToast);
+            const accountLoadingToast = showLoading('Creating your account...');
+
+            // Step 2: Create user account
+            const accountResponse = await apiService.createAccount(
+                leadResponse.leadId,
+                updatedFormData
+            );
+
+            if (accountResponse.status !== 'success') {
+                throw new Error(accountResponse.message || 'Failed to create account');
+            }
+
+            // Success!
+            dismiss(accountLoadingToast);
+            setSubmission({
+                isSubmitting: false,
+                isSuccess: true,
+                error: null,
+                leadResponse,
+                accountResponse
+            });
+
+            showSuccess('Application submitted successfully!');
+
+            // Store API responses for success screen
+            onChange({
+                ...updatedFormData,
+                leadId: leadResponse.leadId,
+                accountId: accountResponse.accountId,
+                salesforceId: leadResponse.salesforceId
+            });
+
+            // Proceed to success screen
+            setTimeout(() => {
+                if (onNext) onNext();
+            }, 1000);
+
+        } catch (error) {
+            dismiss(loadingToast);
+            const errorMessage = error instanceof Error ? error.message : 'Something went wrong. Please try again.';
+
+            setSubmission(prev => ({
+                ...prev,
+                isSubmitting: false,
+                error: errorMessage
+            }));
+
+            showError(errorMessage);
+        }
+    };
+
+    const handleRetry = () => {
+        if (isValid && agreedToTerms) {
+            const formData = watch();
+            onSubmit(formData);
+        }
     };
 
     const getFieldIcon = (fieldName: string) => {
@@ -222,6 +308,32 @@ const ContactInfoStep: React.FC<FormStepProps> = ({ data, onChange, onBack, onNe
                             </motion.div>
                         )}
 
+                        {/* Error Display with Retry */}
+                        {submission.error && (
+                            <motion.div
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="bg-red-50 border border-red-200 rounded-lg p-4"
+                            >
+                                <div className="flex items-center gap-3">
+                                    <div className="text-red-600">
+                                        <span className="text-sm font-medium">Submission Failed</span>
+                                        <p className="text-sm mt-1">{submission.error}</p>
+                                    </div>
+                                    <Button
+                                        variant="flat"
+                                        color="danger"
+                                        size="sm"
+                                        onPress={handleRetry}
+                                        startContent={<RefreshCw className="w-4 h-4" />}
+                                        isDisabled={submission.isSubmitting || !isValid || !agreedToTerms}
+                                    >
+                                        Retry
+                                    </Button>
+                                </div>
+                            </motion.div>
+                        )}
+
                         {/* Navigation Buttons */}
                         <div className="flex justify-between pt-4">
                             <Button
@@ -230,7 +342,7 @@ const ContactInfoStep: React.FC<FormStepProps> = ({ data, onChange, onBack, onNe
                                 size="lg"
                                 radius="lg"
                                 onPress={onBack}
-                                isDisabled={isSubmitting}
+                                isDisabled={submission.isSubmitting}
                                 startContent={<span>←</span>}
                             >
                                 Back
@@ -240,11 +352,12 @@ const ContactInfoStep: React.FC<FormStepProps> = ({ data, onChange, onBack, onNe
                                 size="lg"
                                 radius="lg"
                                 type="submit"
-                                isLoading={isSubmitting}
-                                isDisabled={!isValid || !agreedToTerms}
-                                endContent={!isSubmitting && <span>→</span>}
+                                isLoading={submission.isSubmitting}
+                                isDisabled={!isValid || !agreedToTerms || submission.isSubmitting}
+                                startContent={submission.isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : undefined}
+                                endContent={!submission.isSubmitting && <span>→</span>}
                             >
-                                {isSubmitting ? 'Submitting...' : 'Submit Application'}
+                                {submission.isSubmitting ? 'Submitting...' : 'Submit Application'}
                             </Button>
                         </div>
                     </form>
