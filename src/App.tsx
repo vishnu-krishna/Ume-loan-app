@@ -10,6 +10,7 @@ import PersonalityQuiz from './components/PersonalityQuiz';
 import LoanDetailsStep from './components/LoanDetailsStep';
 import ContactInfoStep from './components/ContactInfoStep';
 import SuccessScreen from './components/SuccessScreen';
+import DevTools from './components/DevTools';
 import { useFormPersistence } from './hooks/useFormPersistence';
 import { RefreshCw, Save } from 'lucide-react';
 
@@ -135,6 +136,22 @@ function App() {
         }
     };
 
+    // DevTools helper functions
+    const handleClearData = () => {
+        setFormData({
+            loanAmount: 50000,
+            loanType: 'personal',
+            name: '',
+            email: '',
+            phone: ''
+        });
+        clearProgress();
+        setStep(0);
+        setIsCompleted(false);
+    };
+
+
+
     // Main app
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-4 sm:p-8">
@@ -242,6 +259,13 @@ function App() {
                         </ModalFooter>
                     </ModalContent>
                 </Modal>
+
+                {/* Developer Tools */}
+                <DevTools
+                    formData={formData}
+                    currentStep={step}
+                    onClearData={handleClearData}
+                />
             </div>
         </div>
     );
