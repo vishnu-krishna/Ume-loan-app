@@ -7,7 +7,12 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build:analyze": "vite build --mode analyze",
+    "build:demo": "VITE_DEMO_MODE=true vite build",
+    "deploy": "npm run build && vercel --prod",
+    "deploy:demo": "npm run build:demo && vercel --prod",
+    "deploy:preview": "npm run build && vercel"
   },
   "dependencies": {
     "@heroui/button": "2.2.22",
@@ -56,6 +61,7 @@
     "globals": "^16.3.0",
     "postcss": "^8.5.6",
     "tailwindcss": "3.4.16",
+    "terser": "^5.43.1",
     "typescript": "^5.9.2",
     "vite": "^5.4.19"
   },

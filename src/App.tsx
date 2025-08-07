@@ -166,6 +166,24 @@ function App() {
                         Ume Loans
                     </h1>
                     <p className="text-gray-600">Fast, Simple, Secure Loan Applications</p>
+
+                    {/* Demo Mode Indicator */}
+                    {import.meta.env.VITE_DEMO_MODE === 'true' && (
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="mt-2"
+                        >
+                            <Chip
+                                color="warning"
+                                variant="flat"
+                                size="sm"
+                                className="bg-orange-100 text-orange-800 border border-orange-200"
+                            >
+                                🎭 Demo Mode - Mock API Active
+                            </Chip>
+                        </motion.div>
+                    )}
                 </motion.div>
 
                 {/* Progress Indicator */}
