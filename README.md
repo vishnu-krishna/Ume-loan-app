@@ -1,12 +1,57 @@
-# React + Vite
+# Ume Loans - Lead Acquisition Form
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, multi-step loan application form built with React, TypeScript, and HeroUI components.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Interactive loan details configuration with slider controls
+- Real-time form validation and persistence
+- Responsive design with smooth animations
+- Mock API integration for testing
+- Type-safe development with TypeScript
 
-## Expanding the ESLint configuration
+## Quick Start
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Run tests
+npm test
+
+# Build for production
+npm run build
+```
+
+## Tech Stack
+
+- **React 18** with TypeScript
+- **HeroUI** component library
+- **Tailwind CSS** for styling
+- **Framer Motion** for animations
+- **React Hook Form** + Zod validation
+- **Vitest** for testing
+- **MSW** for API mocking
+
+## Project Structure
+
+```
+src/
+├── components/          # React components
+├── hooks/              # Custom hooks
+├── services/           # API services
+├── types/              # TypeScript definitions
+├── mocks/              # MSW handlers
+└── test/               # Test utilities
+```
+
+## Development
+
+The application uses Mock Service Worker (MSW) for API simulation during development. In production, these would be replaced with actual API endpoints.
+
+## Deployment
+
+Configured for Vercel deployment with optimized builds and environment-specific configurations.
