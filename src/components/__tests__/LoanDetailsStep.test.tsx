@@ -22,18 +22,15 @@ describe('LoanDetailsStep Component', () => {
     it('renders loan amount slider with correct initial value', () => {
         render(<LoanDetailsStep {...defaultProps} />)
 
-        // Check if slider is present
         const slider = screen.getByRole('slider')
         expect(slider).toBeInTheDocument()
 
-        // Check that the range labels are displayed
         expect(screen.getByText('$1,000 - $500,000')).toBeInTheDocument()
     })
 
     it('displays formatted loan amount', () => {
         render(<LoanDetailsStep {...defaultProps} />)
 
-        // Should display formatted amount
         expect(screen.getByText('$50,000')).toBeInTheDocument()
     })
 
@@ -42,7 +39,6 @@ describe('LoanDetailsStep Component', () => {
 
         const slider = screen.getByRole('slider')
 
-        // Simulate slider change to $75,000
         fireEvent.change(slider, { target: { value: '75000' } })
 
         await waitFor(() => {
@@ -123,8 +119,6 @@ describe('LoanDetailsStep Component', () => {
 
         render(<LoanDetailsStep {...defaultProps} data={testData} />)
 
-        // Should calculate monthly payment based on amount and APR
-        // For $60,000 at 12.5% APR over 60 months
         const monthlyPayment = screen.getByText(/\$1,/)
         expect(monthlyPayment).toBeInTheDocument()
     })
@@ -135,7 +129,6 @@ describe('LoanDetailsStep Component', () => {
         const slider = screen.getByRole('slider')
         fireEvent.change(slider, { target: { value: '100000' } })
 
-        // Monthly payment should update automatically
         await waitFor(() => {
             expect(mockOnChange).toHaveBeenCalledWith({ loanAmount: 100000 })
         })
@@ -184,10 +177,8 @@ describe('LoanDetailsStep Component', () => {
         const slider = screen.getByRole('slider')
         expect(slider).toBeInTheDocument()
 
-        // Check that range is displayed in UI
         expect(screen.getByText('$1,000 - $500,000')).toBeInTheDocument()
 
-        // Check quick select range markers
         expect(screen.getByText('$1K')).toBeInTheDocument()
         expect(screen.getByText('$500K')).toBeInTheDocument()
     })
@@ -195,7 +186,6 @@ describe('LoanDetailsStep Component', () => {
     it('shows loan purpose information', () => {
         render(<LoanDetailsStep {...defaultProps} />)
 
-        // Should show some context about loan purpose
         expect(screen.getByText(/Personal Loan/)).toBeInTheDocument()
         expect(screen.getByText(/For any personal use/)).toBeInTheDocument()
     })

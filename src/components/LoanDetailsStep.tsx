@@ -55,7 +55,6 @@ const LoanDetailsStep: React.FC<FormStepProps> = ({ data, onChange, onNext, onBa
                 </CardHeader>
 
                 <CardBody className="px-8 pb-8 space-y-8">
-                    {/* Loan Amount Display */}
                     <Card className="bg-gradient-to-r from-blue-50 to-purple-50">
                         <CardBody className="text-center p-6">
                             <p className="text-sm text-gray-600 mb-2">Loan Amount</p>
@@ -78,7 +77,6 @@ const LoanDetailsStep: React.FC<FormStepProps> = ({ data, onChange, onNext, onBa
                         </CardBody>
                     </Card>
 
-                    {/* Loan Amount Slider */}
                     <div className="space-y-2">
                         <div className="flex justify-between items-center mb-2">
                             <label className="text-sm font-medium">Adjust Amount</label>
@@ -104,7 +102,6 @@ const LoanDetailsStep: React.FC<FormStepProps> = ({ data, onChange, onNext, onBa
                         </div>
                     </div>
 
-                    {/* Loan Type Selection */}
                     <div className="space-y-4">
                         <label className="text-sm font-medium">Loan Type</label>
                         <div className="grid grid-cols-2 gap-4">
@@ -147,7 +144,6 @@ const LoanDetailsStep: React.FC<FormStepProps> = ({ data, onChange, onNext, onBa
                         </div>
                     </div>
 
-                    {/* Quick Amount Buttons */}
                     <div className="space-y-2">
                         <label className="text-sm font-medium">Quick Select</label>
                         <div className="flex gap-2 flex-wrap">
@@ -165,7 +161,6 @@ const LoanDetailsStep: React.FC<FormStepProps> = ({ data, onChange, onNext, onBa
                         </div>
                     </div>
 
-                    {/* Info Box */}
                     <Card className="bg-blue-50">
                         <CardBody className="flex flex-row gap-3 p-4">
                             <Info className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
@@ -177,7 +172,6 @@ const LoanDetailsStep: React.FC<FormStepProps> = ({ data, onChange, onNext, onBa
                         </CardBody>
                     </Card>
 
-                    {/* Navigation Buttons */}
                     <div className="flex justify-between pt-4">
                         <Button
                             variant="flat"

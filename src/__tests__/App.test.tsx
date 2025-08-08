@@ -4,7 +4,6 @@ import { HeroUIProvider } from '@heroui/system'
 import { Toaster } from 'sonner'
 import App from '../App'
 
-// Simple render helper with providers
 const renderApp = () => {
     return render(
         <HeroUIProvider>
@@ -14,7 +13,6 @@ const renderApp = () => {
     )
 }
 
-// Mock the form persistence hook to avoid localStorage issues
 vi.mock('../hooks/useFormPersistence', () => ({
     useFormPersistence: () => ({
         saveProgress: vi.fn(),
@@ -23,12 +21,10 @@ vi.mock('../hooks/useFormPersistence', () => ({
     })
 }))
 
-// Mock MSW to avoid network issues
 vi.mock('../mocks/browser', () => ({
     startMockWorker: vi.fn().mockResolvedValue(undefined)
 }))
 
-// Mock canvas-confetti
 vi.mock('canvas-confetti', () => ({
     default: vi.fn()
 }))
@@ -48,18 +44,15 @@ describe('App Component', () => {
     it('starts with PersonalityQuiz step', () => {
         renderApp()
 
-        // Should show the personality quiz question
         expect(screen.getByText("What's your financial personality?")).toBeInTheDocument()
     })
 
     it('can navigate to the next step', async () => {
         renderApp()
 
-        // Click on a personality type to advance
         const plannerOption = screen.getByText('The Planner')
         fireEvent.click(plannerOption)
 
-        // Should advance to loan purpose question
         await waitFor(() => {
             expect(screen.getByText('When do you need the funds?')).toBeInTheDocument()
         })
@@ -68,7 +61,6 @@ describe('App Component', () => {
     it('handles form data updates through personality quiz', async () => {
         renderApp()
 
-        // Navigate through the personality quiz
         const plannerOption = screen.getByText('The Planner')
         fireEvent.click(plannerOption)
 
@@ -79,7 +71,6 @@ describe('App Component', () => {
         const immediateOption = screen.getByText('Right Away')
         fireEvent.click(immediateOption)
 
-        // Should advance to loan details step
         await waitFor(() => {
             expect(screen.getByText('Customize Your Loan')).toBeInTheDocument()
         })
@@ -88,7 +79,6 @@ describe('App Component', () => {
     it('shows progress step indicator on later steps', async () => {
         renderApp()
 
-        // Navigate past the personality quiz
         const plannerOption = screen.getByText('The Planner')
         fireEvent.click(plannerOption)
 
@@ -97,7 +87,6 @@ describe('App Component', () => {
             fireEvent.click(immediateOption)
         })
 
-        // Should show step indicator on loan details step
         await waitFor(() => {
             expect(screen.getByText('Step 1 of 3')).toBeInTheDocument()
         })
@@ -106,7 +95,6 @@ describe('App Component', () => {
     it('shows progress bar during quiz', () => {
         renderApp()
 
-        // Should show progress bar
         const progressBar = screen.getByRole('progressbar')
         expect(progressBar).toBeInTheDocument()
         expect(progressBar).toHaveAttribute('aria-label', 'Quiz progress')
@@ -115,7 +103,6 @@ describe('App Component', () => {
     it('displays question counter during quiz', () => {
         renderApp()
 
-        // Should show question counter
         expect(screen.getByText('Question 1 of 2')).toBeInTheDocument()
     })
 })

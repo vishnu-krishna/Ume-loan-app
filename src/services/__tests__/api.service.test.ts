@@ -3,7 +3,6 @@ import axios from 'axios'
 import { apiService } from '../api.service'
 import { mockFormData, mockApiResponses } from '../../test/utils'
 
-// Mock axios
 vi.mock('axios')
 const mockedAxios = axios as any
 
@@ -174,72 +173,6 @@ describe('API Service', () => {
                 }),
                 expect.any(Object)
             )
-        })
-    })
-
-    describe('checkEmailExists', () => {
-        it('calls the correct endpoint with email parameter', async () => {
-            mockedAxios.get.mockResolvedValue({ data: { exists: false } })
-
-            const result = await apiService.checkEmailExists('test@example.com')
-
-            expect(mockedAxios.get).toHaveBeenCalledWith('/api/check-email/test%40example.com', {
-                timeout: 5000
-            })
-
-            expect(result).toBe(false)
-        })
-
-        it('returns true when email exists', async () => {
-            mockedAxios.get.mockResolvedValue({ data: { exists: true } })
-
-            const result = await apiService.checkEmailExists('existing@example.com')
-
-            expect(result).toBe(true)
-        })
-
-        it('returns false when email does not exist', async () => {
-            mockedAxios.get.mockResolvedValue({ data: { exists: false } })
-
-            const result = await apiService.checkEmailExists('new@example.com')
-
-            expect(result).toBe(false)
-        })
-
-        it('handles email check errors gracefully', async () => {
-            const checkError = new Error('Network timeout')
-            mockedAxios.get.mockRejectedValue(checkError)
-
-            // Should not throw, but handle gracefully
-            const result = await apiService.checkEmailExists('test@example.com')
-
-            // Should return false when check fails (fail-safe approach)
-            expect(result).toBe(false)
-        })
-
-        it('makes API call even with invalid email format', async () => {
-            mockedAxios.get.mockResolvedValue({ data: { exists: false } })
-
-            // Test with invalid email format - the method still makes the call
-            const result = await apiService.checkEmailExists('invalid-email')
-
-            // Should make API call even for invalid email (server handles validation)
-            expect(mockedAxios.get).toHaveBeenCalledWith('/api/check-email/invalid-email', {
-                timeout: 5000
-            })
-            expect(result).toBe(false)
-        })
-
-        it('handles empty email parameter', async () => {
-            mockedAxios.get.mockResolvedValue({ data: { exists: false } })
-
-            const result = await apiService.checkEmailExists('')
-
-            // Should make API call even for empty email (server handles validation)
-            expect(mockedAxios.get).toHaveBeenCalledWith('/api/check-email/', {
-                timeout: 5000
-            })
-            expect(result).toBe(false)
         })
     })
 

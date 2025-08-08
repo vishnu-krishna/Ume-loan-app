@@ -4,13 +4,9 @@ import { LoanFormData, ApiResponse, ApiError } from '../types/form.types';
 export class ApiService {
     private baseURL = '/api';
 
-    /**
-     * Submit lead to mock Salesforce CRM
-     */
     async submitLead(data: LoanFormData): Promise<ApiResponse> {
         try {
             const payload = {
-                // Map form data to Salesforce-like structure
                 firstName: data.name.split(' ')[0] || '',
                 lastName: data.name.split(' ').slice(1).join(' ') || data.name,
                 email: data.email,
@@ -45,9 +41,6 @@ export class ApiService {
         }
     }
 
-    /**
-     * Create user account after successful lead submission
-     */
     async createAccount(leadId: string, formData: LoanFormData): Promise<ApiResponse> {
         try {
             const payload = {
@@ -80,24 +73,6 @@ export class ApiService {
             throw new Error('An unexpected error occurred');
         }
     }
-
-    /**
-     * Check if email already exists (for future use)
-     */
-    async checkEmailExists(email: string): Promise<boolean> {
-        try {
-            const response = await axios.get<{ exists: boolean }>(
-                `${this.baseURL}/check-email/${encodeURIComponent(email)}`,
-                { timeout: 5000 }
-            );
-            return response.data.exists;
-        } catch (error) {
-            // If check fails, assume email doesn't exist to avoid blocking user
-            console.warn('Email check failed:', error);
-            return false;
-        }
-    }
 }
 
-// Export singleton instance
 export const apiService = new ApiService();

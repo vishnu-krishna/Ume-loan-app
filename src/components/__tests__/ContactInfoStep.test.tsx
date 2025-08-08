@@ -3,7 +3,6 @@ import { render, screen, fireEvent } from '../../test/utils'
 import ContactInfoStep from '../ContactInfoStep'
 import { mockFormData } from '../../test/utils'
 
-// Mock the toast hook
 vi.mock('../../hooks/useToast', () => ({
     useToast: () => ({
         showSuccess: vi.fn(),
@@ -13,7 +12,6 @@ vi.mock('../../hooks/useToast', () => ({
     })
 }))
 
-// Mock axios to avoid actual API calls
 vi.mock('axios')
 
 describe('ContactInfoStep Component', () => {
@@ -60,10 +58,8 @@ describe('ContactInfoStep Component', () => {
         render(<ContactInfoStep {...defaultProps} />)
         const phoneInput = screen.getByLabelText(/phone/i)
 
-        // Type a 10-digit phone number
         fireEvent.change(phoneInput, { target: { value: '1234567890' } })
 
-        // Should be formatted
         expect(phoneInput).toHaveValue('(123) 456-7890')
     })
 
@@ -118,7 +114,6 @@ describe('ContactInfoStep Component', () => {
     it('renders with proper form structure', () => {
         render(<ContactInfoStep {...defaultProps} />)
 
-        // Check that form exists by finding the form element
         const formElement = document.querySelector('form')
         expect(formElement).toBeInTheDocument()
     })
@@ -134,7 +129,6 @@ describe('ContactInfoStep Component', () => {
     it('shows shield icon in header', () => {
         render(<ContactInfoStep {...defaultProps} />)
 
-        // The shield icon should be present in the header area
         const header = screen.getByText('Almost There! ✨')
         expect(header).toBeInTheDocument()
     })

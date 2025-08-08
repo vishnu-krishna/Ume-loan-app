@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { FormStepProps } from '../types/form.types';
 import { Sparkles, TrendingUp, Target, Rocket, ChevronRight } from 'lucide-react';
 
-const PersonalityQuiz: React.FC<FormStepProps> = ({  onChange, onNext }) => {
+const PersonalityQuiz: React.FC<FormStepProps> = ({ onChange, onNext }) => {
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [answers, setAnswers] = useState<Record<string, string>>({});
     const [hoveredOption, setHoveredOption] = useState<string | null>(null);
@@ -77,10 +77,8 @@ const PersonalityQuiz: React.FC<FormStepProps> = ({  onChange, onNext }) => {
         const newAnswers = { ...answers, [questionId]: value };
         setAnswers(newAnswers);
 
-        // Update form data
         onChange(newAnswers);
 
-        // Move to next question or complete
         if (currentQuestion < questions.length - 1) {
             setTimeout(() => {
                 setCurrentQuestion(prev => prev + 1);

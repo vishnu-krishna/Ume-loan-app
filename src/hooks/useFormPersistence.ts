@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { LoanFormData } from '../types/form.types';
 
 interface SavedSession {
@@ -10,16 +11,16 @@ export const useFormPersistence = () => {
     const STORAGE_KEY = 'ume_loans_session';
     const SESSION_DURATION = 24 * 60 * 60 * 1000; // 24 hours
 
-    const saveProgress = (formData: LoanFormData, step: number): void => {
+    const saveProgress = useCallback((formData: LoanFormData, step: number): void => {
         const session: SavedSession = {
             formData,
             step,
             timestamp: Date.now()
         };
         localStorage.setItem(STORAGE_KEY, JSON.stringify(session));
-    };
+    }, [STORAGE_KEY]);
 
-    const getProgress = (): SavedSession | null => {
+    const getProgress = useCallback((): SavedSession | null => {
         const saved = localStorage.getItem(STORAGE_KEY);
         if (!saved) return null;
 
@@ -33,11 +34,11 @@ export const useFormPersistence = () => {
         }
 
         return session;
-    };
+    }, [STORAGE_KEY, SESSION_DURATION]);
 
-    const clearProgress = (): void => {
+    const clearProgress = useCallback((): void => {
         localStorage.removeItem(STORAGE_KEY);
-    };
+    }, [STORAGE_KEY]);
 
     return { saveProgress, getProgress, clearProgress };
 };

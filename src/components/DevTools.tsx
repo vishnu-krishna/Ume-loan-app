@@ -20,10 +20,8 @@ const DevTools: React.FC<DevToolsProps> = ({
 }) => {
     const [isOpen, setIsOpen] = useState(false);
 
-    // Only show in development
     if (import.meta.env.PROD) return null;
 
-    // Keyboard shortcut: Ctrl+Shift+D
     useEffect(() => {
         const handleKeyPress = (e: KeyboardEvent) => {
             if (e.ctrlKey && e.shiftKey && e.key === 'D') {
@@ -36,7 +34,6 @@ const DevTools: React.FC<DevToolsProps> = ({
         return () => window.removeEventListener('keydown', handleKeyPress);
     }, []);
 
-    // Calculate form completion percentage
     const getCompletionPercentage = () => {
         const fields = [
             formData.personality,
@@ -51,7 +48,6 @@ const DevTools: React.FC<DevToolsProps> = ({
         return Math.round((completed / fields.length) * 100);
     };
 
-    // Get localStorage usage
     const getStorageInfo = () => {
         const saved = localStorage.getItem('loanFormData');
         const size = saved ? new Blob([saved]).size : 0;
@@ -66,7 +62,6 @@ const DevTools: React.FC<DevToolsProps> = ({
 
     return (
         <>
-            {/* Floating Toggle Button */}
             <Button
                 isIconOnly
                 color="primary"
@@ -78,7 +73,6 @@ const DevTools: React.FC<DevToolsProps> = ({
                 <Settings className="w-5 h-5" />
             </Button>
 
-            {/* Developer Tools Panel */} 
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
@@ -116,7 +110,6 @@ const DevTools: React.FC<DevToolsProps> = ({
                                         tabContent: "group-data-[selected=true]:text-primary-foreground"
                                     }}
                                 >
-                                    {/* Form State Tab */}
                                     <Tab
                                         key="state"
                                         title={
@@ -164,7 +157,6 @@ const DevTools: React.FC<DevToolsProps> = ({
                                         </div>
                                     </Tab>
 
-                                    {/* App Info Tab */}
                                     <Tab
                                         key="info"
                                         title={

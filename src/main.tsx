@@ -12,7 +12,6 @@ if (!rootElement) {
     throw new Error('Root element not found')
 }
 
-// Start MSW in development
 startMockWorker().then(() => {
     createRoot(rootElement).render(
         <StrictMode>

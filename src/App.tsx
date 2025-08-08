@@ -31,7 +31,6 @@ function App() {
 
     const { saveProgress, getProgress, clearProgress } = useFormPersistence();
 
-    // Check for saved session on mount
     useEffect(() => {
         const saved = getProgress();
         if (saved && saved.step > 0) {
@@ -40,7 +39,6 @@ function App() {
         }
     }, [getProgress]);
 
-    // Auto-save progress
     useEffect(() => {
         if (step > 0 && !isCompleted) {
             saveProgress(formData, step);
@@ -57,7 +55,7 @@ function App() {
             setStep(prev => prev + 1);
         } else {
             setIsCompleted(true);
-            clearProgress(); // Clear saved session after completion
+            clearProgress();
         }
     };
 
@@ -136,7 +134,6 @@ function App() {
         }
     };
 
-    // DevTools helper functions
     const handleClearData = () => {
         setFormData({
             loanAmount: 50000,
@@ -152,11 +149,9 @@ function App() {
 
 
 
-    // Main app
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-4 sm:p-8">
             <div className="max-w-6xl mx-auto">
-                {/* Header */}
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -166,27 +161,8 @@ function App() {
                         Ume Loans
                     </h1>
                     <p className="text-gray-600">Fast, Simple, Secure Loan Applications</p>
-
-                    {/* Demo Mode Indicator */}
-                    {import.meta.env.VITE_DEMO_MODE === 'true' && (
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            className="mt-2"
-                        >
-                            <Chip
-                                color="warning"
-                                variant="flat"
-                                size="sm"
-                                className="bg-orange-100 text-orange-800 border border-orange-200"
-                            >
-                                🎭 Demo Mode - Mock API Active
-                            </Chip>
-                        </motion.div>
-                    )}
                 </motion.div>
 
-                {/* Progress Indicator */}
                 {!isCompleted && step > 0 && (
                     <motion.div
                         initial={{ opacity: 0 }}
@@ -199,7 +175,7 @@ function App() {
                                 {lastSaved && (
                                     <div className="flex items-center gap-2 text-sm text-gray-500">
                                         <Save className="w-4 h-4" />
-                                        <span>Auto-saved</span>
+                                        <span>Saved</span>
                                     </div>
                                 )}
                             </div>
@@ -215,12 +191,10 @@ function App() {
                     </motion.div>
                 )}
 
-                {/* Main Content */}
                 <AnimatePresence mode="wait">
                     {renderStep()}
                 </AnimatePresence>
 
-                {/* Welcome Back Modal */}
                 <Modal
                     isOpen={showWelcomeBack}
                     onClose={handleStartFresh}
@@ -278,7 +252,6 @@ function App() {
                     </ModalContent>
                 </Modal>
 
-                {/* Developer Tools */}
                 <DevTools
                     formData={formData}
                     currentStep={step}

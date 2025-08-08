@@ -17,7 +17,6 @@ const SuccessScreen: React.FC<SuccessScreenProps> = ({ formData, onContinue }) =
     const [showDetails, setShowDetails] = useState(false);
 
     useEffect(() => {
-        // Trigger multiple confetti bursts
         const duration = 3 * 1000;
         const animationEnd = Date.now() + duration;
         const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
@@ -34,23 +33,17 @@ const SuccessScreen: React.FC<SuccessScreenProps> = ({ formData, onContinue }) =
             }
 
             const particleCount = 50 * (timeLeft / duration);
-
-            // Confetti from left
             confetti({
                 ...defaults,
                 particleCount,
                 origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
             });
-
-            // Confetti from right
             confetti({
                 ...defaults,
                 particleCount,
                 origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
             });
         }, 250);
-
-        // Show details after animation
         setTimeout(() => setShowDetails(true), 1500);
 
         return () => clearInterval(interval);

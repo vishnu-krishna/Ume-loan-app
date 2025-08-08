@@ -49,7 +49,6 @@ describe('PersonalityQuiz Component', () => {
     it('allows user to select different personality types', async () => {
         render(<PersonalityQuiz {...defaultProps} />)
 
-        // Select The Balancer
         const balancerCard = screen.getByText('The Balancer').closest('button')
         fireEvent.click(balancerCard!)
 
@@ -57,7 +56,6 @@ describe('PersonalityQuiz Component', () => {
             expect(mockOnChange).toHaveBeenCalledWith({ personality: 'balanced' })
         })
 
-        // Select The Dreamer
         const dreamerCard = screen.getByText('The Dreamer').closest('button')
         fireEvent.click(dreamerCard!)
 
@@ -69,16 +67,13 @@ describe('PersonalityQuiz Component', () => {
     it('shows back button on second question', async () => {
         render(<PersonalityQuiz {...defaultProps} />)
 
-        // Click on first question option to advance
         const plannerCard = screen.getByText('The Planner').closest('button')
         fireEvent.click(plannerCard!)
 
-        // Wait for transition to second question
         await waitFor(() => {
             expect(screen.getByText('When do you need the funds?')).toBeInTheDocument()
         })
 
-        // Should show back button
         const backButton = screen.getByText('Back')
         expect(backButton).toBeInTheDocument()
     })
@@ -86,13 +81,11 @@ describe('PersonalityQuiz Component', () => {
     it('advances to second question after first selection', async () => {
         render(<PersonalityQuiz {...defaultProps} />)
 
-        // Should start with first question
         expect(screen.getByText("What's your financial personality?")).toBeInTheDocument()
 
         const plannerCard = screen.getByText('The Planner').closest('button')
         fireEvent.click(plannerCard!)
 
-        // Should advance to second question
         await waitFor(() => {
             expect(screen.getByText('When do you need the funds?')).toBeInTheDocument()
         })
@@ -101,20 +94,16 @@ describe('PersonalityQuiz Component', () => {
     it('calls onNext after completing both questions', async () => {
         render(<PersonalityQuiz {...defaultProps} />)
 
-        // Complete first question
         const plannerCard = screen.getByText('The Planner').closest('button')
         fireEvent.click(plannerCard!)
 
-        // Wait for second question
         await waitFor(() => {
             expect(screen.getByText('When do you need the funds?')).toBeInTheDocument()
         })
 
-        // Complete second question
         const rightAwayCard = screen.getByText('Right Away').closest('button')
         fireEvent.click(rightAwayCard!)
 
-        // Should call onNext after completion
         await waitFor(() => {
             expect(mockOnNext).toHaveBeenCalled()
         })
@@ -123,16 +112,13 @@ describe('PersonalityQuiz Component', () => {
     it('updates loan purpose when user makes selection on second question', async () => {
         render(<PersonalityQuiz {...defaultProps} />)
 
-        // Complete first question to get to second question
         const plannerCard = screen.getByText('The Planner').closest('button')
         fireEvent.click(plannerCard!)
 
-        // Wait for second question
         await waitFor(() => {
             expect(screen.getByText('When do you need the funds?')).toBeInTheDocument()
         })
 
-        // Find and click on "Right Away" option
         const immediateOption = screen.getByText('Right Away').closest('button')
         expect(immediateOption).toBeInTheDocument()
 
@@ -149,7 +135,6 @@ describe('PersonalityQuiz Component', () => {
     it('shows progress indicator', () => {
         render(<PersonalityQuiz {...defaultProps} />)
 
-        // Should show some form of progress indication
         const progressElements = screen.getAllByRole('progressbar')
         expect(progressElements.length).toBeGreaterThan(0)
     })
@@ -163,7 +148,6 @@ describe('PersonalityQuiz Component', () => {
 
         render(<PersonalityQuiz {...defaultProps} data={partialData} />)
 
-        // Progress should reflect partial completion
         const progressBar = screen.getByRole('progressbar')
         expect(progressBar).toBeInTheDocument()
     })

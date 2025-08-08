@@ -58,7 +58,6 @@ const ContactInfoStep: React.FC<FormStepProps> = ({ data, onChange, onBack, onNe
             return;
         }
 
-        // Update form data first
         const updatedFormData = {
             ...data,
             name: formData.name,
@@ -67,7 +66,6 @@ const ContactInfoStep: React.FC<FormStepProps> = ({ data, onChange, onBack, onNe
         };
         onChange(updatedFormData);
 
-        // Start submission process
         setSubmission(prev => ({
             ...prev,
             isSubmitting: true,
@@ -77,18 +75,15 @@ const ContactInfoStep: React.FC<FormStepProps> = ({ data, onChange, onBack, onNe
         const loadingToast = showLoading('Submitting your application...');
 
         try {
-            // Step 1: Submit lead to Salesforce
             const leadResponse = await apiService.submitLead(updatedFormData);
 
             if (leadResponse.status !== 'success') {
                 throw new Error(leadResponse.message || 'Failed to submit lead');
             }
 
-            // Update loading message
             dismiss(loadingToast);
             const accountLoadingToast = showLoading('Creating your account...');
 
-            // Step 2: Create user account
             const accountResponse = await apiService.createAccount(
                 leadResponse.leadId,
                 updatedFormData
@@ -98,7 +93,6 @@ const ContactInfoStep: React.FC<FormStepProps> = ({ data, onChange, onBack, onNe
                 throw new Error(accountResponse.message || 'Failed to create account');
             }
 
-            // Success!
             dismiss(accountLoadingToast);
             setSubmission({
                 isSubmitting: false,
@@ -110,7 +104,6 @@ const ContactInfoStep: React.FC<FormStepProps> = ({ data, onChange, onBack, onNe
 
             showSuccess('Application submitted successfully!');
 
-            // Store API responses for success screen
             onChange({
                 ...updatedFormData,
                 leadId: leadResponse.leadId,
@@ -118,7 +111,6 @@ const ContactInfoStep: React.FC<FormStepProps> = ({ data, onChange, onBack, onNe
                 salesforceId: leadResponse.salesforceId
             });
 
-            // Proceed to success screen
             setTimeout(() => {
                 if (onNext) onNext();
             }, 1000);
