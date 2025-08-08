@@ -1,57 +1,43 @@
-# Ume Loans - Lead Acquisition Form
+# Ume Loans — Multi‑step Lead Form
 
-A modern, multi-step loan application form built with React, TypeScript, and HeroUI components.
+Live: <a href="https://ume-loan-app.vercel.app/" target="_blank" rel="noopener noreferrer">ume-loan-app.vercel.app</a>
+
+## Testing
+- Tests are written with Vitest and React Testing Library.
+- Passing test run:
+
+![Vitest test run (all green)](./screenshot.png)
+
+Modern, production‑style multi‑step loan application built with React + TypeScript The flow guides users through a short quiz, loan details, contact info, and a success screen.
 
 ## Features
-
-- Interactive loan details configuration with slider controls
-- Real-time form validation and persistence
-- Responsive design with smooth animations
-- Mock API integration for testing
-- Type-safe development with TypeScript
+- Multi‑step form with animated transitions
+- Loan amount slider with real‑time monthly estimate
+- Form validation (React Hook Form + Zod)
+- Auto‑save to localStorage and session restore
+- In‑browser mock API (MSW) simulating lead + account creation
 
 ## Quick Start
-
 ```bash
-# Install dependencies
 npm install
-
-# Start development server
-npm run dev
-
-# Run tests
-npm test
-
-# Build for production
-npm run build
+npm run dev          # start locally
+npm test             # unit tests
+npm run build        # production build
+npm run preview      # preview build locally
 ```
 
 ## Tech Stack
+- React + TypeScript
+- Tailwind CSS
+- Framer Motion
+- React Hook Form, Zod
+- Axios
+- Vitest + React Testing Library (jsdom)
+- MSW (Mock Service Worker)
 
-- **React 18** with TypeScript
-- **HeroUI** component library
-- **Tailwind CSS** for styling
-- **Framer Motion** for animations
-- **React Hook Form** + Zod validation
-- **Vitest** for testing
-- **MSW** for API mocking
 
-## Project Structure
-
-```
-src/
-├── components/          # React components
-├── hooks/              # Custom hooks
-├── services/           # API services
-├── types/              # TypeScript definitions
-├── mocks/              # MSW handlers
-└── test/               # Test utilities
-```
-
-## Development
-
-The application uses Mock Service Worker (MSW) for API simulation during development. In production, these would be replaced with actual API endpoints.
+## Mock API
+The app uses MSW to simulate standard REST endpoints under `/api/*` for this demo. No setup is required to run the project locally.
 
 ## Deployment
-
-Configured for Vercel deployment with optimized builds and environment-specific configurations.
+Deployed to Vercel. The repo includes `vercel.json` for headers and rewrites. To preview a local production build use `npm run preview` after `npm run build`.
