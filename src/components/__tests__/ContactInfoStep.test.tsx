@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, fireEvent } from '../../test/utils'
+import { render, screen, fireEvent } from '../../test/store-utils'
+import { useFormStore } from '../../store/useFormStore'
 import ContactInfoStep from '../ContactInfoStep'
 import { mockFormData } from '../../test/utils'
 
@@ -15,23 +16,17 @@ vi.mock('../../hooks/useToast', () => ({
 vi.mock('axios')
 
 describe('ContactInfoStep Component', () => {
-    const mockOnChange = vi.fn()
     const mockOnNext = vi.fn()
     const mockOnBack = vi.fn()
 
-    const defaultProps = {
-        data: mockFormData,
-        onChange: mockOnChange,
-        onNext: mockOnNext,
-        onBack: mockOnBack
-    }
-
     beforeEach(() => {
         vi.clearAllMocks()
+        useFormStore.getState().resetForm()
+        useFormStore.getState().updateFormData(mockFormData)
     })
 
     it('renders all form fields', () => {
-        render(<ContactInfoStep {...defaultProps} />)
+        render(<ContactInfoStep onNext={mockOnNext} onBack={mockOnBack} />)
 
         expect(screen.getByLabelText(/full name/i)).toBeInTheDocument()
         expect(screen.getByLabelText(/email/i)).toBeInTheDocument()
@@ -47,7 +42,12 @@ describe('ContactInfoStep Component', () => {
             email: 'jane.doe@example.com',
             phone: '9876543210'
         }
-        render(<ContactInfoStep {...defaultProps} data={initialData} />)
+
+        render(<ContactInfoStep onNext={mockOnNext} onBack={mockOnBack} />, {
+            initialStoreState: {
+                formData: initialData
+            }
+        })
 
         expect(screen.getByLabelText(/full name/i)).toHaveValue('Jane Doe')
         expect(screen.getByLabelText(/email/i)).toHaveValue('jane.doe@example.com')
@@ -55,7 +55,7 @@ describe('ContactInfoStep Component', () => {
     })
 
     it('formats phone number correctly', () => {
-        render(<ContactInfoStep {...defaultProps} />)
+        render(<ContactInfoStep onNext={mockOnNext} onBack={mockOnBack} />)
         const phoneInput = screen.getByLabelText(/phone/i)
 
         fireEvent.change(phoneInput, { target: { value: '1234567890' } })
@@ -64,7 +64,7 @@ describe('ContactInfoStep Component', () => {
     })
 
     it('shows back button and calls onBack when clicked', () => {
-        render(<ContactInfoStep {...defaultProps} />)
+        render(<ContactInfoStep onNext={mockOnNext} onBack={mockOnBack} />)
 
         const backButton = screen.getByText('Back')
         expect(backButton).toBeInTheDocument()
@@ -74,20 +74,20 @@ describe('ContactInfoStep Component', () => {
     })
 
     it('displays security badge', () => {
-        render(<ContactInfoStep {...defaultProps} />)
+        render(<ContactInfoStep onNext={mockOnNext} onBack={mockOnBack} />)
 
         expect(screen.getByText('We use bank-level encryption to protect your data')).toBeInTheDocument()
     })
 
     it('displays the correct header and subtitle', () => {
-        render(<ContactInfoStep {...defaultProps} />)
+        render(<ContactInfoStep onNext={mockOnNext} onBack={mockOnBack} />)
 
         expect(screen.getByText('Almost There! ✨')).toBeInTheDocument()
         expect(screen.getByText('We just need a few details to complete your application')).toBeInTheDocument()
     })
 
     it('shows form field labels correctly', () => {
-        render(<ContactInfoStep {...defaultProps} />)
+        render(<ContactInfoStep onNext={mockOnNext} onBack={mockOnBack} />)
 
         expect(screen.getByText('Full Name')).toBeInTheDocument()
         expect(screen.getByText('Email Address')).toBeInTheDocument()
@@ -95,7 +95,7 @@ describe('ContactInfoStep Component', () => {
     })
 
     it('displays terms and conditions checkbox', () => {
-        render(<ContactInfoStep {...defaultProps} />)
+        render(<ContactInfoStep onNext={mockOnNext} onBack={mockOnBack} />)
 
         const termsCheckbox = screen.getByLabelText(/i agree to the terms/i)
         expect(termsCheckbox).toBeInTheDocument()
@@ -103,7 +103,7 @@ describe('ContactInfoStep Component', () => {
     })
 
     it('allows checking the terms and conditions', () => {
-        render(<ContactInfoStep {...defaultProps} />)
+        render(<ContactInfoStep onNext={mockOnNext} onBack={mockOnBack} />)
 
         const termsCheckbox = screen.getByLabelText(/i agree to the terms/i)
         fireEvent.click(termsCheckbox)
@@ -112,14 +112,14 @@ describe('ContactInfoStep Component', () => {
     })
 
     it('renders with proper form structure', () => {
-        render(<ContactInfoStep {...defaultProps} />)
+        render(<ContactInfoStep onNext={mockOnNext} onBack={mockOnBack} />)
 
         const formElement = document.querySelector('form')
         expect(formElement).toBeInTheDocument()
     })
 
     it('displays submit button with correct text', () => {
-        render(<ContactInfoStep {...defaultProps} />)
+        render(<ContactInfoStep onNext={mockOnNext} onBack={mockOnBack} />)
 
         const submitButton = screen.getByText('Submit Application')
         expect(submitButton).toBeInTheDocument()
@@ -127,7 +127,7 @@ describe('ContactInfoStep Component', () => {
     })
 
     it('shows shield icon in header', () => {
-        render(<ContactInfoStep {...defaultProps} />)
+        render(<ContactInfoStep onNext={mockOnNext} onBack={mockOnBack} />)
 
         const header = screen.getByText('Almost There! ✨')
         expect(header).toBeInTheDocument()

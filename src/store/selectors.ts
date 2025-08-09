@@ -1,0 +1,17 @@
+import { useFormStore } from './useFormStore'
+
+export const useFormData = () => useFormStore((state) => state.formData)
+export const useCurrentStep = () => useFormStore((state) => state.currentStep)
+export const useIsCompleted = () => useFormStore((state) => state.isCompleted)
+export const useShowWelcomeBack = () => useFormStore((state) => state.showWelcomeBack)
+export const useLastSaved = () => useFormStore((state) => state.lastSaved)
+export const useAgreedToTerms = () => useFormStore((state) => state.agreedToTerms)
+export const useSubmission = () => useFormStore((state) => state.submission)
+export const useUpdateFormData = () => useFormStore((state) => state.updateFormData)
+export const useNextStep = () => useFormStore((state) => state.nextStep)
+export const usePreviousStep = () => useFormStore((state) => state.previousStep)
+export const useCompleteForm = () => useFormStore((state) => state.completeForm)
+export const useSetShowWelcomeBack = () => useFormStore((state) => state.setShowWelcomeBack)
+export const useSetAgreedToTerms = () => useFormStore((state) => state.setAgreedToTerms)
+export const useSetSubmission = () => useFormStore((state) => state.setSubmission)
+export const useClearAllData = () => useFormStore((state) => state.clearAllData)

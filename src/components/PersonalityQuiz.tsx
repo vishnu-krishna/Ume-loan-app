@@ -3,13 +3,18 @@ import { Card, CardBody, CardHeader } from '@heroui/card';
 import { Button } from '@heroui/button';
 import { Progress } from '@heroui/progress';
 import { motion } from 'framer-motion';
-import { FormStepProps } from '../types/form.types';
 import { Sparkles, TrendingUp, Target, Rocket, ChevronRight } from 'lucide-react';
+import { useUpdateFormData } from '@/store/selectors.ts';
 
-const PersonalityQuiz: React.FC<FormStepProps> = ({ onChange, onNext }) => {
+interface PersonalityQuizProps {
+    onNext?: () => void;
+}
+
+const PersonalityQuiz: React.FC<PersonalityQuizProps> = ({ onNext }) => {
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [answers, setAnswers] = useState<Record<string, string>>({});
     const [hoveredOption, setHoveredOption] = useState<string | null>(null);
+    const updateFormData = useUpdateFormData();
 
     const questions = [
         {
@@ -77,7 +82,7 @@ const PersonalityQuiz: React.FC<FormStepProps> = ({ onChange, onNext }) => {
         const newAnswers = { ...answers, [questionId]: value };
         setAnswers(newAnswers);
 
-        onChange(newAnswers);
+        updateFormData(newAnswers);
 
         if (currentQuestion < questions.length - 1) {
             setTimeout(() => {

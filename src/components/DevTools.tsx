@@ -5,19 +5,15 @@ import { Tabs, Tab } from '@heroui/tabs';
 import { Chip } from '@heroui/chip';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Settings, X, Code, Info, Database } from 'lucide-react';
-import type { LoanFormData } from '../types/form.types';
+import { useFormData, useCurrentStep } from '../store/selectors';
 
 interface DevToolsProps {
-    formData: LoanFormData;
-    currentStep: number;
     onClearData?: () => void;
 }
 
-const DevTools: React.FC<DevToolsProps> = ({
-    formData,
-    currentStep,
-    onClearData
-}) => {
+const DevTools: React.FC<DevToolsProps> = ({ onClearData }) => {
+    const formData = useFormData();
+    const currentStep = useCurrentStep();
     const [isOpen, setIsOpen] = useState(false);
 
     if (import.meta.env.PROD) return null;
@@ -49,12 +45,19 @@ const DevTools: React.FC<DevToolsProps> = ({
     };
 
     const getStorageInfo = () => {
-        const saved = localStorage.getItem('loanFormData');
+        const saved = localStorage.getItem('ume-loans-storage');
         const size = saved ? new Blob([saved]).size : 0;
         return {
             hasData: !!saved,
             size: `${(size / 1024).toFixed(2)} KB`,
-            lastSaved: saved ? new Date(JSON.parse(saved).timestamp).toLocaleTimeString() : 'Never'
+            lastSaved: saved ? (() => {
+                try {
+                    const parsed = JSON.parse(saved);
+                    return parsed.state?.lastSaved ? new Date(parsed.state.lastSaved).toLocaleTimeString() : 'Never';
+                } catch {
+                    return 'Invalid';
+                }
+            })() : 'Never'
         };
     };
 

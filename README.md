@@ -14,6 +14,7 @@ Modern, production‑style multi‑step loan application built with React + Type
 - Multi‑step form with animated transitions
 - Loan amount slider with real‑time monthly estimate
 - Form validation (React Hook Form + Zod)
+- Zustand state management for centralized, type-safe state
 - Auto‑save to localStorage and session restore
 - In‑browser mock API (MSW) simulating lead + account creation
 

@@ -1,25 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, fireEvent, waitFor } from '@testing-library/react'
-import { HeroUIProvider } from '@heroui/system'
+import { render, screen, fireEvent, waitFor } from '../test/store-utils'
 import { Toaster } from 'sonner'
 import App from '../App'
 
 const renderApp = () => {
     return render(
-        <HeroUIProvider>
+        <>
             <App />
             <Toaster />
-        </HeroUIProvider>
+        </>
     )
 }
-
-vi.mock('../hooks/useFormPersistence', () => ({
-    useFormPersistence: () => ({
-        saveProgress: vi.fn(),
-        getProgress: vi.fn(() => null),
-        clearProgress: vi.fn()
-    })
-}))
 
 vi.mock('../mocks/browser', () => ({
     startMockWorker: vi.fn().mockResolvedValue(undefined)

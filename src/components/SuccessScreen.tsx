@@ -6,14 +6,14 @@ import { motion } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import CountUp from 'react-countup';
 import { CheckCircle, Download, ArrowRight, Mail, Phone, Calendar } from 'lucide-react';
-import { LoanFormData } from '../types/form.types';
+import { useFormData } from '../store/selectors';
 
 interface SuccessScreenProps {
-    formData: LoanFormData;
     onContinue?: () => void;
 }
 
-const SuccessScreen: React.FC<SuccessScreenProps> = ({ formData, onContinue }) => {
+const SuccessScreen: React.FC<SuccessScreenProps> = ({ onContinue }) => {
+    const formData = useFormData();
     const [showDetails, setShowDetails] = useState(false);
 
     useEffect(() => {

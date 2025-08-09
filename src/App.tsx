@@ -1,150 +1,92 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@heroui/modal';
 import { Button } from '@heroui/button';
 import { Card, CardBody } from '@heroui/card';
 import { Chip } from '@heroui/chip';
-import { LoanFormData } from './types/form.types';
 import PersonalityQuiz from './components/PersonalityQuiz';
 import LoanDetailsStep from './components/LoanDetailsStep';
 import ContactInfoStep from './components/ContactInfoStep';
 import SuccessScreen from './components/SuccessScreen';
 import DevTools from './components/DevTools';
-import { useFormPersistence } from './hooks/useFormPersistence';
+import { useFormData, useCurrentStep, useIsCompleted, useShowWelcomeBack, useLastSaved, useNextStep, usePreviousStep, useCompleteForm, useSetShowWelcomeBack, useClearAllData } from './store/selectors';
 import { RefreshCw, Save } from 'lucide-react';
 
 function App() {
-    const [step, setStep] = useState<number>(0);
-    const [isCompleted, setIsCompleted] = useState(false);
-    const [showWelcomeBack, setShowWelcomeBack] = useState(false);
-    const [savedSession, setSavedSession] = useState<{ formData: LoanFormData, step: number } | null>(null);
-    const [lastSaved, setLastSaved] = useState<Date | null>(null);
-
-    const [formData, setFormData] = useState<LoanFormData>({
-        loanAmount: 50000,
-        loanType: 'personal',
-        name: '',
-        email: '',
-        phone: ''
-    });
-
-    const { saveProgress, getProgress, clearProgress } = useFormPersistence();
-
+    const formData = useFormData();
+    const currentStep = useCurrentStep();
+    const isCompleted = useIsCompleted();
+    const showWelcomeBack = useShowWelcomeBack();
+    const lastSaved = useLastSaved();
+    const nextStep = useNextStep();
+    const previousStep = usePreviousStep();
+    const completeForm = useCompleteForm();
+    const setShowWelcomeBack = useSetShowWelcomeBack();
+    const clearAllData = useClearAllData();
     useEffect(() => {
-        const saved = getProgress();
-        if (saved && saved.step > 0) {
-            setSavedSession(saved);
-            setShowWelcomeBack(true);
+        try {
+            const savedData = localStorage.getItem('ume-loans-storage');
+            if (savedData) {
+                try {
+                    const parsed = JSON.parse(savedData);
+                    if (parsed.state && parsed.state.currentStep > 0) {
+                        setShowWelcomeBack(true);
+                    }
+                } catch (parseError) {
+                    console.warn('Failed to parse saved session:', parseError);
+                    localStorage.removeItem('ume-loans-storage');
+                }
+            }
+        } catch (storageError) {
+            console.warn('localStorage is not available:', storageError);
         }
-    }, [getProgress]);
-
-    useEffect(() => {
-        if (step > 0 && !isCompleted) {
-            saveProgress(formData, step);
-            setLastSaved(new Date());
-        }
-    }, [formData, step, saveProgress, isCompleted]);
-
-    const updateFormData = (data: Partial<LoanFormData>) => {
-        setFormData(prev => ({ ...prev, ...data }));
-    };
+    }, [setShowWelcomeBack]);
 
     const handleNext = () => {
-        if (step < 3) {
-            setStep(prev => prev + 1);
+        if (currentStep < 3) {
+            nextStep();
         } else {
-            setIsCompleted(true);
-            clearProgress();
+            completeForm();
         }
     };
 
     const handleBack = () => {
-        if (step > 0) {
-            setStep(prev => prev - 1);
-        }
+        previousStep();
     };
 
     const handleRestoreSession = () => {
-        if (savedSession) {
-            setFormData(savedSession.formData);
-            setStep(savedSession.step);
-            setShowWelcomeBack(false);
-        }
+        setShowWelcomeBack(false);
     };
 
     const handleStartFresh = () => {
-        clearProgress();
+        clearAllData();
         setShowWelcomeBack(false);
-        setSavedSession(null);
     };
 
     const handleRestart = () => {
-        setStep(0);
-        setIsCompleted(false);
-        setFormData({
-            loanAmount: 50000,
-            loanType: 'personal',
-            name: '',
-            email: '',
-            phone: ''
-        });
-        clearProgress();
+        clearAllData();
     };
 
 
 
     const renderStep = () => {
-        switch (step) {
+        switch (currentStep) {
             case 0:
-                return (
-                    <PersonalityQuiz
-                        data={formData}
-                        onChange={updateFormData}
-                        onNext={handleNext}
-                    />
-                );
+                return <PersonalityQuiz onNext={handleNext} />;
             case 1:
-                return (
-                    <LoanDetailsStep
-                        data={formData}
-                        onChange={updateFormData}
-                        onNext={handleNext}
-                        onBack={handleBack}
-                    />
-                );
+                return <LoanDetailsStep onNext={handleNext} onBack={handleBack} />;
             case 2:
-                return (
-                    <ContactInfoStep
-                        data={formData}
-                        onChange={updateFormData}
-                        onNext={handleNext}
-                        onBack={handleBack}
-                    />
-                );
+                return <ContactInfoStep onNext={handleNext} onBack={handleBack} />;
             case 3:
-                return (
-                    <SuccessScreen
-                        formData={formData}
-                        onContinue={handleRestart}
-                    />
-                );
+                return <SuccessScreen onContinue={handleRestart} />;
             default:
                 return null;
         }
     };
 
     const handleClearData = () => {
-        setFormData({
-            loanAmount: 50000,
-            loanType: 'personal',
-            name: '',
-            email: '',
-            phone: ''
-        });
-        clearProgress();
-        setStep(0);
-        setIsCompleted(false);
+        clearAllData();
     };
 
 
@@ -163,7 +105,7 @@ function App() {
                     <p className="text-gray-600">Fast, Simple, Secure Loan Applications</p>
                 </motion.div>
 
-                {!isCompleted && step > 0 && (
+                {!isCompleted && currentStep > 0 && (
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -171,7 +113,7 @@ function App() {
                     >
                         <div className="max-w-3xl mx-auto">
                             <div className="flex items-center justify-between mb-2">
-                                <span className="text-sm text-gray-600">Step {step} of 3</span>
+                                <span className="text-sm text-gray-600">Step {currentStep} of 3</span>
                                 {lastSaved && (
                                     <div className="flex items-center gap-2 text-sm text-gray-500">
                                         <Save className="w-4 h-4" />
@@ -183,7 +125,7 @@ function App() {
                                 <motion.div
                                     className="bg-gradient-to-r from-blue-600 to-purple-600 h-2 rounded-full"
                                     initial={{ width: 0 }}
-                                    animate={{ width: `${(step / 3) * 100}%` }}
+                                    animate={{ width: `${(currentStep / 3) * 100}%` }}
                                     transition={{ duration: 0.3 }}
                                 />
                             </div>
@@ -213,19 +155,19 @@ function App() {
                                     <div className="flex justify-between items-center">
                                         <span className="text-sm text-gray-600">Progress:</span>
                                         <Chip size="sm" color="primary" variant="flat">
-                                            Step {savedSession?.step} of 3
+                                            Step {currentStep} of 3
                                         </Chip>
                                     </div>
-                                    {savedSession?.formData.name && (
+                                    {formData.name && (
                                         <div className="flex justify-between items-center">
                                             <span className="text-sm text-gray-600">Name:</span>
-                                            <span className="text-sm font-medium">{savedSession.formData.name}</span>
+                                            <span className="text-sm font-medium">{formData.name}</span>
                                         </div>
                                     )}
                                     <div className="flex justify-between items-center">
                                         <span className="text-sm text-gray-600">Loan Amount:</span>
                                         <span className="text-sm font-medium">
-                                            ${savedSession?.formData.loanAmount.toLocaleString()}
+                                            ${formData.loanAmount.toLocaleString()}
                                         </span>
                                     </div>
                                 </CardBody>
@@ -252,11 +194,7 @@ function App() {
                     </ModalContent>
                 </Modal>
 
-                <DevTools
-                    formData={formData}
-                    currentStep={step}
-                    onClearData={handleClearData}
-                />
+                <DevTools onClearData={handleClearData} />
             </div>
         </div>
     );

@@ -6,9 +6,8 @@ import { motion } from 'framer-motion';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { FormStepProps, SubmissionState } from '../types/form.types';
+import { useFormData, useAgreedToTerms, useSubmission, useUpdateFormData, useSetAgreedToTerms, useSetSubmission } from '../store/selectors';
 import { User, Mail, Phone, Shield, CheckCircle, Loader2, RefreshCw } from 'lucide-react';
-import { useState } from 'react';
 import { apiService } from '../services/api.service';
 import { useToast } from '../hooks/useToast';
 
@@ -20,15 +19,18 @@ const contactSchema = z.object({
 
 type ContactFormData = z.infer<typeof contactSchema>;
 
-const ContactInfoStep: React.FC<FormStepProps> = ({ data, onChange, onBack, onNext }) => {
-    const [agreedToTerms, setAgreedToTerms] = useState(false);
-    const [submission, setSubmission] = useState<SubmissionState>({
-        isSubmitting: false,
-        isSuccess: false,
-        error: null,
-        leadResponse: null,
-        accountResponse: null
-    });
+interface ContactInfoStepProps {
+    onNext?: () => void;
+    onBack?: () => void;
+}
+
+const ContactInfoStep: React.FC<ContactInfoStepProps> = ({ onBack, onNext }) => {
+    const data = useFormData();
+    const agreedToTerms = useAgreedToTerms();
+    const submission = useSubmission();
+    const updateFormData = useUpdateFormData();
+    const setAgreedToTerms = useSetAgreedToTerms();
+    const setSubmission = useSetSubmission();
 
     const { showSuccess, showError, showLoading, dismiss } = useToast();
 
@@ -64,13 +66,12 @@ const ContactInfoStep: React.FC<FormStepProps> = ({ data, onChange, onBack, onNe
             email: formData.email,
             phone: formData.phone
         };
-        onChange(updatedFormData);
+        updateFormData(updatedFormData);
 
-        setSubmission(prev => ({
-            ...prev,
+        setSubmission({
             isSubmitting: true,
             error: null
-        }));
+        });
 
         const loadingToast = showLoading('Submitting your application...');
 
@@ -104,7 +105,7 @@ const ContactInfoStep: React.FC<FormStepProps> = ({ data, onChange, onBack, onNe
 
             showSuccess('Application submitted successfully!');
 
-            onChange({
+            updateFormData({
                 ...updatedFormData,
                 leadId: leadResponse.leadId,
                 accountId: accountResponse.accountId,
@@ -119,11 +120,10 @@ const ContactInfoStep: React.FC<FormStepProps> = ({ data, onChange, onBack, onNe
             dismiss(loadingToast);
             const errorMessage = error instanceof Error ? error.message : 'Something went wrong. Please try again.';
 
-            setSubmission(prev => ({
-                ...prev,
+            setSubmission({
                 isSubmitting: false,
                 error: errorMessage
-            }));
+            });
 
             showError(errorMessage);
         }

@@ -46,5 +46,12 @@ beforeEach(() => {
     localStorageMock.setItem.mockClear()
     localStorageMock.removeItem.mockClear()
     localStorageMock.clear.mockClear()
+
+    try {
+        const { useFormStore } = require('../store/useFormStore')
+        useFormStore.getState().resetForm()
+    } catch (error) {
+        // Store might not be available in all tests
+    }
 })
 

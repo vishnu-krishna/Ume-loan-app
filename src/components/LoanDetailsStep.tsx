@@ -4,7 +4,8 @@ import { Chip } from '@heroui/chip';
 import { Slider } from '@heroui/slider';
 import { motion } from 'framer-motion';
 import CountUp from 'react-countup';
-import { FormStepProps, LoanFormData } from '../types/form.types';
+import { LoanFormData } from '../types/form.types';
+import { useFormData, useUpdateFormData } from '../store/selectors';
 import { DollarSign, Calculator, Info } from 'lucide-react';
 
 const LOAN_TYPES = [
@@ -14,12 +15,19 @@ const LOAN_TYPES = [
     { value: 'business', label: 'Business Loan', apr: 9.5, icon: '💼', description: 'Grow your business' }
 ];
 
-const LoanDetailsStep: React.FC<FormStepProps> = ({ data, onChange, onNext, onBack }) => {
+interface LoanDetailsStepProps {
+    onNext?: () => void;
+    onBack?: () => void;
+}
+
+const LoanDetailsStep: React.FC<LoanDetailsStepProps> = ({ onNext, onBack }) => {
+    const data = useFormData();
+    const updateFormData = useUpdateFormData();
     const selectedLoanType = LOAN_TYPES.find(t => t.value === data.loanType);
     const monthlyPayment = calculateMonthlyPayment(
         data.loanAmount,
         selectedLoanType?.apr || 12.5,
-        36 // 36 months default
+        36
     );
 
     function calculateMonthlyPayment(amount: number, apr: number, months: number): number {
@@ -87,7 +95,7 @@ const LoanDetailsStep: React.FC<FormStepProps> = ({ data, onChange, onNext, onBa
                             minValue={1000}
                             maxValue={500000}
                             value={data.loanAmount}
-                            onChange={(value) => onChange({ loanAmount: value as number })}
+                            onChange={(value) => updateFormData({ loanAmount: value as number })}
                             className="max-w-full"
                             color="primary"
                             size="lg"
@@ -119,7 +127,7 @@ const LoanDetailsStep: React.FC<FormStepProps> = ({ data, onChange, onNext, onBa
                                             ? 'bg-primary/5 border-2 border-primary'
                                             : 'border-2 border-transparent'
                                             }`}
-                                        onPress={() => onChange({ loanType: type.value as LoanFormData['loanType'] })}
+                                        onPress={() => updateFormData({ loanType: type.value as LoanFormData['loanType'] })}
                                     >
                                         <CardBody className="p-4">
                                             <div className="flex items-start gap-3">
@@ -153,7 +161,7 @@ const LoanDetailsStep: React.FC<FormStepProps> = ({ data, onChange, onNext, onBa
                                     size="md"
                                     variant={data.loanAmount === amount ? "solid" : "flat"}
                                     color={data.loanAmount === amount ? "primary" : "default"}
-                                    onPress={() => onChange({ loanAmount: amount })}
+                                    onPress={() => updateFormData({ loanAmount: amount })}
                                 >
                                     {formatCurrency(amount)}
                                 </Button>
