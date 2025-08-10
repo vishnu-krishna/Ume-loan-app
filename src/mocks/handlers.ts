@@ -11,10 +11,6 @@ const delay = (ms: number = Math.random() * 1000 + 500): Promise<void> => {
     return new Promise(resolve => setTimeout(resolve, ms));
 };
 
-const shouldSimulateError = (): boolean => {
-    return Math.random() < 0.1;
-};
-
 const getForcedErrorType = (email: string) => {
     if (email === 'test@error.com') return { status: 500, message: 'Forced server error for testing' };
     if (email === 'demo@500.com') return { status: 500, message: 'Internal server error. Please try again.' };
@@ -39,25 +35,6 @@ export const handlers = [
                     code: `ERR_${forcedError.status}`
                 },
                 { status: forcedError.status }
-            );
-        }
-
-        if (shouldSimulateError()) {
-            const errorTypes = [
-                { status: 500, message: 'Internal server error. Please try again.' },
-                { status: 422, message: 'Validation failed. Please check your information.' },
-                { status: 503, message: 'Service temporarily unavailable. Please try again later.' }
-            ];
-
-            const error = errorTypes[Math.floor(Math.random() * errorTypes.length)];
-
-            return HttpResponse.json(
-                {
-                    status: 'error',
-                    message: error.message,
-                    code: `ERR_${error.status}`
-                },
-                { status: error.status }
             );
         }
 
@@ -87,17 +64,6 @@ export const handlers = [
                     code: `ERR_ACCOUNT_${forcedError.status}`
                 },
                 { status: forcedError.status }
-            );
-        }
-
-        if (shouldSimulateError()) {
-            return HttpResponse.json(
-                {
-                    status: 'error',
-                    message: 'Failed to create account. Please contact support.',
-                    code: 'ERR_ACCOUNT_CREATION'
-                },
-                { status: 500 }
             );
         }
 
