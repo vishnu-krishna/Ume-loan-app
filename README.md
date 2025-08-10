@@ -17,6 +17,7 @@ Modern, production‑style multi‑step loan application built with React + Type
 - Zustand state management for centralized, type-safe state
 - Auto‑save to localStorage and session restore
 - In‑browser mock API (MSW) simulating lead + account creation
+- Mobile friendly
 
 ## Quick Start
 ```bash
