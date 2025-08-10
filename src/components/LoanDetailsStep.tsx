@@ -38,9 +38,9 @@ const LoanDetailsStep: React.FC<LoanDetailsStepProps> = ({ onNext, onBack }) => 
     }
 
     const formatCurrency = (value: number) => {
-        return new Intl.NumberFormat('en-US', {
+        return new Intl.NumberFormat('en-AU', {
             style: 'currency',
-            currency: 'USD',
+            currency: 'AUD',
             minimumFractionDigits: 0,
             maximumFractionDigits: 0,
         }).format(value);

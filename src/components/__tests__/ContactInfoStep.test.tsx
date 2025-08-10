@@ -40,7 +40,7 @@ describe('ContactInfoStep Component', () => {
             ...mockFormData,
             name: 'Jane Doe',
             email: 'jane.doe@example.com',
-            phone: '9876543210'
+            phone: '0987654321'
         }
 
         render(<ContactInfoStep onNext={mockOnNext} onBack={mockOnBack} />, {
@@ -51,16 +51,16 @@ describe('ContactInfoStep Component', () => {
 
         expect(screen.getByLabelText(/full name/i)).toHaveValue('Jane Doe')
         expect(screen.getByLabelText(/email/i)).toHaveValue('jane.doe@example.com')
-        expect(screen.getByLabelText(/phone/i)).toHaveValue('(987) 654-3210')
+        expect(screen.getByLabelText(/phone/i)).toHaveValue('0987 654 321')
     })
 
     it('formats phone number correctly', () => {
         render(<ContactInfoStep onNext={mockOnNext} onBack={mockOnBack} />)
         const phoneInput = screen.getByLabelText(/phone/i)
 
-        fireEvent.change(phoneInput, { target: { value: '1234567890' } })
+        fireEvent.change(phoneInput, { target: { value: '0412345678' } })
 
-        expect(phoneInput).toHaveValue('(123) 456-7890')
+        expect(phoneInput).toHaveValue('0412 345 678')
     })
 
     it('shows back button and calls onBack when clicked', () => {

@@ -14,7 +14,7 @@ import { useToast } from '../hooks/useToast';
 const contactSchema = z.object({
     name: z.string().min(2, 'Name must be at least 2 characters'),
     email: z.string().email('Please enter a valid email address'),
-    phone: z.string().regex(/^\d{10}$/, 'Phone must be 10 digits (numbers only)')
+    phone: z.string().regex(/^\d{10}$/, 'Phone must be 10 digits starting with 0 (Australian format)')
 });
 
 type ContactFormData = z.infer<typeof contactSchema>;
@@ -49,9 +49,9 @@ const ContactInfoStep: React.FC<ContactInfoStepProps> = ({ onBack, onNext }) => 
 
     const formatPhone = (value: string) => {
         const numbers = value.replace(/\D/g, '');
-        if (numbers.length <= 3) return numbers;
-        if (numbers.length <= 6) return `(${numbers.slice(0, 3)}) ${numbers.slice(3)}`;
-        return `(${numbers.slice(0, 3)}) ${numbers.slice(3, 6)}-${numbers.slice(6, 10)}`;
+        if (numbers.length <= 4) return numbers;
+        if (numbers.length <= 7) return `${numbers.slice(0, 4)} ${numbers.slice(4)}`;
+        return `${numbers.slice(0, 4)} ${numbers.slice(4, 7)} ${numbers.slice(7, 10)}`;
     };
 
     const onSubmit = async (formData: ContactFormData) => {
@@ -234,7 +234,7 @@ const ContactInfoStep: React.FC<ContactInfoStepProps> = ({ onBack, onNext }) => 
                                 <Input
                                     {...field}
                                     label="Phone Number"
-                                    placeholder="(555) 123-4567"
+                                    placeholder="0412 345 678"
                                     variant="bordered"
                                     size="lg"
                                     radius="lg"

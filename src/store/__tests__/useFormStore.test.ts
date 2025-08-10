@@ -186,7 +186,7 @@ describe('useFormStore', () => {
                 email: 'jane@example.com',
                 loanAmount: 75000,
                 loanType: 'auto' as const,
-                phone: '(555) 123-4567'
+                phone: '0412345678'
             }
 
             act(() => {

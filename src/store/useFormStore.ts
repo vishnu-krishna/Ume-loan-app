@@ -142,7 +142,7 @@ export const useFormStore = create<FormStore>()(
                 partialize: (state) => ({
                     formData: state.formData,
                     currentStep: state.currentStep,
-                    lastSaved: state.lastSaved
+                    lastSaved: state.lastSaved,
                 }),
                 onRehydrateStorage: () => (_, error) => {
                     if (error) {

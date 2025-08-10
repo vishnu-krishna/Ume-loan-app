@@ -7,6 +7,7 @@ export const useShowWelcomeBack = () => useFormStore((state) => state.showWelcom
 export const useLastSaved = () => useFormStore((state) => state.lastSaved)
 export const useAgreedToTerms = () => useFormStore((state) => state.agreedToTerms)
 export const useSubmission = () => useFormStore((state) => state.submission)
+
 export const useUpdateFormData = () => useFormStore((state) => state.updateFormData)
 export const useNextStep = () => useFormStore((state) => state.nextStep)
 export const usePreviousStep = () => useFormStore((state) => state.previousStep)

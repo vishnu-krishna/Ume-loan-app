@@ -24,7 +24,7 @@ export const mockFormData = {
     loanType: 'personal' as const,
     name: 'John Doe',
     email: 'john@example.com',
-    phone: '(555) 123-4567'
+    phone: '0412345678'
 }
 
 export const mockApiResponses = {

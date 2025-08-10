@@ -198,7 +198,7 @@ const SuccessScreen: React.FC<SuccessScreenProps> = ({ onContinue }) => {
                                     </div>
                                     <div className="flex items-center gap-2 text-sm text-gray-600">
                                         <Phone className="w-4 h-4" />
-                                        <span>{formData.phone}</span>
+                                        <span>{formData.phone ? formData.phone.replace(/(\d{4})(\d{3})(\d{3})/, '$1 $2 $3') : ''}</span>
                                     </div>
                                 </CardBody>
                             </Card>
